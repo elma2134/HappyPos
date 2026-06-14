@@ -266,6 +266,42 @@ td,th{
 }
 </style>
 
+
+<style>
+/* Product price edit UI */
+.item-actions{
+  display:flex;
+  gap:8px;
+  margin-top:10px;
+}
+.item-actions button{
+  flex:1;
+  border:none;
+  border-radius:12px;
+  padding:10px;
+  cursor:pointer;
+  font-weight:bold;
+}
+.item-actions .add-btn{
+  background:var(--primary);
+  color:#fff;
+}
+.item-actions .edit-btn{
+  background:#fff0eb;
+  color:var(--primary-dark);
+  border:1px solid #ffd5c8;
+}
+.price-rule-actions{
+  display:flex;
+  gap:6px;
+  flex-wrap:wrap;
+}
+.price-rule-actions .btn{
+  padding:8px 10px !important;
+  font-size:13px !important;
+}
+</style>
+
 </head>
 <body>
 
@@ -765,9 +801,38 @@ function renderMenu(){
   const grid=document.getElementById('menuGrid');
   grid.innerHTML='';
   menuItems.forEach((item,index)=>{
-    grid.innerHTML += `<div class="menu-item" onclick="addFixedToCart(${index})"><div><span class="tag">${item.type}</span><br><b>${item.name}</b></div><div class="price">${Number(item.price).toLocaleString('th-TH')} ฿</div></div>`;
+    grid.innerHTML += `
+      <div class="menu-item">
+        <div>
+          <span class="tag">${item.type}</span><br>
+          <b>${item.name}</b>
+        </div>
+        <div>
+          <div class="price">${Number(item.price).toLocaleString('th-TH')} ฿</div>
+          <div class="item-actions">
+            <button class="add-btn" onclick="addFixedToCart(${index})">เพิ่ม</button>
+            <button class="edit-btn" onclick="editMenuItemPrice(${index})">แก้ราคา</button>
+          </div>
+        </div>
+      </div>`;
   });
 }
+
+function editMenuItemPrice(index){
+  const item = menuItems[index];
+  const newPrice = prompt(`แก้ราคา: ${item.name}`, item.price);
+  if(newPrice === null) return;
+  const price = Number(newPrice);
+  if(!price || price <= 0){
+    alert('กรุณากรอกราคาให้ถูกต้อง');
+    return;
+  }
+  item.price = price;
+  saveAll();
+  renderAll();
+  alert('แก้ไขราคาเรียบร้อย');
+}
+
 function addFixedToCart(index){ cart.push({...menuItems[index], petType:'-', serviceName:menuItems[index].name, isGrooming:false, usedFree:false}); renderCart(); }
 
 function renderCart(){
@@ -902,9 +967,24 @@ function renderPriceRules(){
   if(priceRules.length===0){table.innerHTML='<tr><td colspan="6">ยังไม่มีเรทราคา</td></tr>'; return;}
   table.innerHTML='';
   priceRules.map((r,i)=>({...r,index:i})).sort((a,b)=>a.petType.localeCompare(b.petType,'th')||a.service.localeCompare(b.service,'th')||Number(a.min)-Number(b.min)).forEach(r=>{
-    table.innerHTML += `<tr><td>${r.petType}</td><td>${r.coatType}</td><td>${r.service}</td><td>${r.min}-${r.max} กก.</td><td>${Number(r.price).toLocaleString('th-TH')} ฿</td><td><button class="btn danger" onclick="deletePriceRule(${r.index})">ลบ</button></td></tr>`;
+    table.innerHTML += `<tr><td>${r.petType}</td><td>${r.coatType}</td><td>${r.service}</td><td>${r.min}-${r.max} กก.</td><td>${Number(r.price).toLocaleString('th-TH')} ฿</td><td><div class="price-rule-actions"><button class="btn secondary" onclick="editPriceRule(${r.index})">แก้ราคา</button><button class="btn danger" onclick="deletePriceRule(${r.index})">ลบ</button></div></td></tr>`;
   });
 }
+function editPriceRule(index){
+  const rule = priceRules[index];
+  const newPrice = prompt(`แก้ราคา: ${rule.petType} / ${rule.coatType} / ${rule.service} / ${rule.min}-${rule.max} กก.`, rule.price);
+  if(newPrice === null) return;
+  const price = Number(newPrice);
+  if(!price || price <= 0){
+    alert('กรุณากรอกราคาให้ถูกต้อง');
+    return;
+  }
+  rule.price = price;
+  saveAll();
+  renderAll();
+  alert('แก้ไขราคาเรียบร้อย');
+}
+
 function deletePriceRule(index){ if(confirm('ต้องการลบเรทราคานี้ใช่ไหม?')){priceRules.splice(index,1); saveAll(); renderAll();} }
 
 function addStaff(){
