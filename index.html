@@ -491,9 +491,10 @@ let currentStaff = JSON.parse(localStorage.getItem('hg_currentStaff_v4')) || nul
 let promotion = JSON.parse(localStorage.getItem('hg_promotion_v4')) || {name:'ครบ 5 ครั้ง ฟรี 1 ครั้ง', required:5, free:1, active:true};
 
 let menuItems = JSON.parse(localStorage.getItem('hg_menuItems_v4')) || [
-  {name:'ฝากเลี้ยง 1 วัน', price:350, type:'ฝากเลี้ยง'},
+  {name:'ฝากเลี้ยง 1 วัน', price:200, type:'ฝากเลี้ยง'},
   {name:'แชมพูสัตว์เลี้ยง', price:250, type:'สินค้า'},
-  {name:'ตัดเล็บ', price:100, type:'บริการอื่น ๆ'}
+  {name:'ตัดเล็บ', price:50, type:'บริการอื่น ๆ'}
+  {name:'เล็บขน', price:50, type:'บริการอื่น ๆ'}
 ];
 let priceRules = JSON.parse(localStorage.getItem('hg_priceRules_v4')) || [
   {petType:'สุนัข', coatType:'ขนสั้น', service:'อาบน้ำ', min:0, max:5, price:300},
