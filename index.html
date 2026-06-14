@@ -1,0 +1,1135 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Happy Grooming POS V2 - Promotion</title>
+  <style>
+    :root {
+      --primary:#ff7a59; --primary2:#ffb3a1; --bg:#fff8f5; --card:#fff;
+      --text:#2f2f2f; --muted:#777; --line:#f0e1dc; --danger:#e35d5b;
+      --green:#27a56f; --shadow:0 14px 35px rgba(255,122,89,.13); --radius:22px;
+    }
+    *{box-sizing:border-box}
+    body{margin:0;font-family:Arial,Tahoma,sans-serif;background:linear-gradient(135deg,#fff8f5,#fff4f8);color:var(--text)}
+    .login-screen{min-height:100vh;display:grid;place-items:center;padding:18px}
+    .login-card{width:100%;max-width:420px;background:white;border-radius:28px;padding:26px;box-shadow:var(--shadow);text-align:center}
+    .login-logo{width:72px;height:72px;border-radius:24px;background:linear-gradient(135deg,var(--primary),#ffb6c1);display:grid;place-items:center;color:white;font-size:34px;margin:0 auto 14px}
+    .app{display:none;grid-template-columns:270px 1fr;min-height:100vh}
+    .sidebar{padding:22px;background:rgba(255,255,255,.88);border-right:1px solid var(--line);position:sticky;top:0;height:100vh}
+    .brand{display:flex;align-items:center;gap:12px;margin-bottom:22px}
+    .logo{width:52px;height:52px;border-radius:18px;background:linear-gradient(135deg,var(--primary),#ffb6c1);display:grid;place-items:center;color:white;font-size:26px;box-shadow:var(--shadow)}
+    .brand h1{margin:0;font-size:20px}.brand p{margin:4px 0 0;color:var(--muted);font-size:13px}
+    .staff-box{background:#fff4ef;border:1px solid #ffe0d5;border-radius:18px;padding:12px;margin-bottom:18px;font-size:14px}
+    .staff-box b{color:var(--primary)}
+    .nav button{width:100%;border:none;background:transparent;padding:13px 14px;border-radius:16px;margin-bottom:8px;display:flex;gap:10px;font-size:15px;color:#444;cursor:pointer;text-align:left}
+    .nav button.active,.nav button:hover{background:linear-gradient(135deg,#fff1eb,#ffe2ea);color:var(--primary);font-weight:bold}
+    .content{padding:24px;max-width:1280px;width:100%;margin:0 auto}
+    .topbar{display:flex;justify-content:space-between;gap:16px;align-items:center;margin-bottom:22px}
+    .topbar h2{margin:0;font-size:28px}.topbar p{margin:5px 0 0;color:var(--muted)}
+    .pill{background:white;border:1px solid var(--line);padding:10px 14px;border-radius:999px;color:var(--muted);box-shadow:0 8px 22px rgba(0,0,0,.04);white-space:nowrap}
+    .dashboard{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:18px}
+    .stat{background:var(--card);border-radius:var(--radius);padding:18px;box-shadow:var(--shadow)}
+    .stat span{color:var(--muted);font-size:13px}.stat strong{display:block;margin-top:8px;font-size:24px}
+    .grid-main{display:grid;grid-template-columns:1.25fr .95fr;gap:18px}
+    .card{background:rgba(255,255,255,.93);border:1px solid rgba(255,255,255,.75);border-radius:var(--radius);padding:18px;box-shadow:var(--shadow);margin-bottom:18px}
+    .card h3{margin:0 0 14px;font-size:19px}
+    input,select,textarea{width:100%;padding:13px 14px;border:1px solid var(--line);border-radius:15px;background:white;font-size:15px;outline:none;margin-bottom:10px}
+    textarea{min-height:78px;resize:vertical}
+    .row{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+    .row3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px}
+    .btn{border:none;background:var(--primary);color:white;padding:13px 16px;border-radius:16px;cursor:pointer;font-size:15px;font-weight:bold;box-shadow:0 10px 20px rgba(255,122,89,.20)}
+    .btn.secondary{background:#5f6368;box-shadow:none}.btn.green{background:var(--green);box-shadow:none}.btn.danger{background:var(--danger);box-shadow:none;padding:8px 10px;border-radius:12px;font-size:13px}.btn.full{width:100%}
+    .menu-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:12px}
+    .menu-item{border:1px solid #ffe0d5;background:linear-gradient(180deg,#fff,#fff4ef);border-radius:20px;padding:15px;cursor:pointer;transition:.18s;min-height:110px;display:flex;flex-direction:column;justify-content:space-between}
+    .tag{display:inline-block;width:fit-content;padding:5px 10px;border-radius:999px;background:#fff0eb;color:var(--primary);font-size:12px;margin-bottom:10px}
+    .tag.green{background:#e9fff5;color:var(--green)}
+    .price{color:var(--primary);font-size:18px;font-weight:bold;margin-top:8px}
+    .calc-box{background:linear-gradient(135deg,#fff1eb,#ffe8ef);border-radius:20px;padding:16px;margin-bottom:14px}
+    .calc-result{display:flex;justify-content:space-between;align-items:center;padding:14px;background:white;border-radius:16px;margin:8px 0 12px}
+    .calc-result strong{font-size:26px;color:var(--primary)}
+    .cart-line{display:flex;justify-content:space-between;gap:10px;padding:12px 0;border-bottom:1px solid var(--line);align-items:center}
+    .cart-line small{color:var(--muted)}
+    .total-box{margin:16px 0;padding:16px;background:linear-gradient(135deg,#fff1eb,#ffe8ef);border-radius:18px;display:flex;justify-content:space-between;align-items:center}
+    .total-box strong{font-size:26px;color:var(--primary)}
+    table{width:100%;border-collapse:collapse;overflow:hidden;border-radius:16px}
+    th{background:#fff2ec;color:#7a4a3d;font-size:13px} th,td{padding:12px;border-bottom:1px solid var(--line);text-align:left;vertical-align:top;font-size:14px}
+    .table-wrap{overflow-x:auto}.empty{text-align:center;color:var(--muted);padding:24px 10px;background:#fffaf8;border-radius:16px}
+    .progress{height:10px;background:#f5ddd5;border-radius:99px;overflow:hidden;margin-top:6px}
+    .progress div{height:100%;background:linear-gradient(90deg,var(--primary),#ffb6c1);border-radius:99px}
+    .mobile-nav{display:none;position:fixed;left:10px;right:10px;bottom:10px;background:rgba(255,255,255,.95);border:1px solid var(--line);border-radius:22px;padding:8px;box-shadow:0 16px 40px rgba(0,0,0,.12);z-index:99;grid-template-columns:repeat(6,1fr);gap:5px}
+    .mobile-nav button{border:none;background:transparent;border-radius:16px;padding:8px 2px;font-size:11px;color:#555}.mobile-nav button.active{background:#fff0eb;color:var(--primary);font-weight:bold}
+    .page{display:none}.page.active{display:block}
+    @media(max-width:980px){.app.logged{display:block}.sidebar{display:none}.content{padding:16px 12px 95px}.mobile-nav{display:grid}.topbar{align-items:flex-start;flex-direction:column;gap:10px}.topbar h2{font-size:24px}.dashboard{grid-template-columns:repeat(2,1fr)}.grid-main{grid-template-columns:1fr}.row,.row3{grid-template-columns:1fr}.pill{width:100%;text-align:center}}
+    @media(min-width:981px){.app.logged{display:grid}}
+    @media(max-width:480px){.dashboard{grid-template-columns:1fr}.menu-grid{grid-template-columns:1fr}.card{padding:14px;border-radius:18px}}
+    @media print{.sidebar,.mobile-nav,.topbar,.btn{display:none!important}.app{display:block}body{background:white}.content{padding:0}.card{box-shadow:none;border:1px solid #ddd}.page{display:none!important}#report{display:block!important}}
+  </style>
+
+<style>
+/* Easy UX/UI override */
+:root{
+  --primary:#ff7a59;
+  --primary-dark:#e85f3f;
+  --soft:#fff3ee;
+  --soft2:#fff8f5;
+  --card:#ffffff;
+  --text:#252525;
+  --muted:#6f6f6f;
+  --line:#eadbd5;
+  --danger:#d9534f;
+  --green:#2e9f6e;
+  --shadow:0 8px 24px rgba(0,0,0,.07);
+  --radius:18px;
+}
+body{
+  background:#fff8f5 !important;
+  color:var(--text) !important;
+}
+.login-card,.card,.stat{
+  box-shadow:var(--shadow) !important;
+  border:1px solid var(--line) !important;
+}
+.sidebar{
+  background:#ffffff !important;
+}
+.brand{
+  margin-bottom:16px !important;
+}
+.logo,.login-logo{
+  background:var(--primary) !important;
+  box-shadow:none !important;
+}
+.nav button{
+  border:1px solid transparent !important;
+  font-size:16px !important;
+  padding:14px 15px !important;
+}
+.nav button.active,.nav button:hover{
+  background:var(--soft) !important;
+  color:var(--primary-dark) !important;
+  border-color:#ffd5c8 !important;
+}
+.staff-box{
+  background:var(--soft2) !important;
+}
+.content{
+  max-width:1180px !important;
+}
+.topbar{
+  background:white;
+  padding:18px;
+  border:1px solid var(--line);
+  border-radius:var(--radius);
+  box-shadow:var(--shadow);
+}
+.topbar h2{
+  font-size:26px !important;
+}
+.dashboard{
+  grid-template-columns:repeat(4,1fr) !important;
+}
+.stat{
+  padding:16px !important;
+}
+.stat strong{
+  color:var(--primary-dark);
+  font-size:24px !important;
+}
+.grid-main{
+  grid-template-columns:1.15fr .85fr !important;
+  align-items:start;
+}
+.card{
+  padding:18px !important;
+  border-radius:var(--radius) !important;
+  background:white !important;
+}
+.card h3{
+  font-size:20px !important;
+  margin-bottom:12px !important;
+}
+input,select,textarea{
+  border:1px solid var(--line) !important;
+  border-radius:14px !important;
+  padding:14px !important;
+  font-size:16px !important;
+  background:#fff !important;
+}
+input:focus,select:focus,textarea:focus{
+  border-color:var(--primary) !important;
+  box-shadow:0 0 0 3px rgba(255,122,89,.14) !important;
+}
+.btn{
+  border-radius:14px !important;
+  padding:14px 16px !important;
+  box-shadow:none !important;
+  font-size:16px !important;
+}
+.btn:hover{
+  opacity:.92;
+}
+.btn.danger{
+  background:var(--danger) !important;
+  color:white !important;
+}
+.btn.secondary{
+  background:#5f6368 !important;
+  color:white !important;
+}
+.btn.green{
+  background:var(--green) !important;
+}
+.menu-grid{
+  grid-template-columns:repeat(2,1fr) !important;
+  gap:10px !important;
+}
+.menu-item{
+  min-height:92px !important;
+  border-radius:16px !important;
+  background:#fff !important;
+  border:1px solid #f2d8d0 !important;
+  box-shadow:none !important;
+}
+.menu-item:hover{
+  transform:none !important;
+  background:var(--soft) !important;
+}
+.tag{
+  background:#fff0eb !important;
+  color:var(--primary-dark) !important;
+}
+.calc-box{
+  background:var(--soft2) !important;
+  border:1px solid var(--line) !important;
+}
+.calc-result{
+  border:1px solid var(--line) !important;
+}
+.total-box{
+  background:var(--soft) !important;
+  border:1px solid #ffd9ce !important;
+}
+.total-box strong,.calc-result strong,.price{
+  color:var(--primary-dark) !important;
+}
+table{
+  border:1px solid var(--line);
+  border-radius:14px;
+}
+th{
+  background:#fff0eb !important;
+  color:#703829 !important;
+  font-weight:700 !important;
+}
+td,th{
+  padding:12px 10px !important;
+}
+.empty{
+  background:#fff8f5 !important;
+  border:1px dashed #e8cfc6 !important;
+}
+.mobile-nav{
+  border-radius:18px !important;
+}
+.mobile-nav button{
+  font-size:12px !important;
+}
+.mobile-nav button.active{
+  background:var(--primary) !important;
+  color:white !important;
+}
+#report .row{
+  margin-bottom:10px;
+}
+#report .btn{
+  width:100%;
+}
+@media(max-width:980px){
+  .content{padding:12px 10px 92px !important;}
+  .topbar{padding:14px !important;}
+  .topbar h2{font-size:22px !important;}
+  .dashboard{grid-template-columns:repeat(2,1fr) !important;}
+  .grid-main{grid-template-columns:1fr !important;}
+  .row,.row3{grid-template-columns:1fr !important;}
+  .menu-grid{grid-template-columns:1fr 1fr !important;}
+  .card{padding:14px !important;}
+  .pill{white-space:normal !important;}
+}
+@media(max-width:520px){
+  .dashboard{grid-template-columns:1fr 1fr !important;gap:8px !important;}
+  .stat{padding:12px !important;}
+  .stat strong{font-size:20px !important;}
+  .menu-grid{grid-template-columns:1fr !important;}
+  input,select,textarea,.btn{font-size:15px !important;}
+  td,th{font-size:13px !important;}
+}
+</style>
+
+
+<style>
+/* Product price edit UI */
+.item-actions{
+  display:flex;
+  gap:8px;
+  margin-top:10px;
+}
+.item-actions button{
+  flex:1;
+  border:none;
+  border-radius:12px;
+  padding:10px;
+  cursor:pointer;
+  font-weight:bold;
+}
+.item-actions .add-btn{
+  background:var(--primary);
+  color:#fff;
+}
+.item-actions .edit-btn{
+  background:#fff0eb;
+  color:var(--primary-dark);
+  border:1px solid #ffd5c8;
+}
+.price-rule-actions{
+  display:flex;
+  gap:6px;
+  flex-wrap:wrap;
+}
+.price-rule-actions .btn{
+  padding:8px 10px !important;
+  font-size:13px !important;
+}
+</style>
+
+</head>
+<body>
+
+<div id="loginScreen" class="login-screen">
+  <div class="login-card">
+    <div class="login-logo">🐾</div>
+    <h1>Happy Grooming POS</h1>
+    <p>เลือกชื่อพนักงานก่อนเข้าใช้งาน</p>
+    <select id="loginStaffSelect"></select>
+    <input id="loginPin" type="password" placeholder="รหัส PIN">
+    <button class="btn full" onclick="login()">เข้าสู่ระบบ</button>
+    <p style="font-size:13px;color:#777">เริ่มต้น: เจ้าของร้าน PIN 1234</p>
+  </div>
+</div>
+
+<div id="app" class="app">
+  <aside class="sidebar">
+    <div class="brand"><div class="logo">🐾</div><div><h1>Happy Grooming</h1><p>POS V2 Full System</p></div></div>
+    <div class="staff-box">เข้าใช้งานโดย<br><b id="currentStaffName">-</b><br><button class="btn secondary full" style="margin-top:10px" onclick="logout()">ออกจากระบบ</button></div>
+    <nav class="nav">
+      <button class="active" onclick="showPage('pos')">🧾 ขายหน้าร้าน</button>
+      <button onclick="showPage('customers')">👥 ลูกค้า/โปร</button>
+      <button onclick="showPage('promotion')">🎁 โปรโมชั่น</button>
+      <button onclick="showPage('price')">⚖️ ตารางราคา</button>
+      <button onclick="showPage('staff')">👩‍💼 พนักงาน</button>
+      <button onclick="showPage('report')">📊 รายงาน</button>
+    </nav>
+  </aside>
+
+  <main class="content">
+    <div class="topbar">
+      <div><h2 id="pageTitle">ขายหน้าร้าน</h2><p>นับจำนวนครั้งลูกค้าอัตโนมัติ และรองรับโปรครบ 5 ครั้ง ฟรี 1 ครั้ง</p></div>
+      <div class="pill" id="todayText"></div>
+    </div>
+
+    <section class="dashboard">
+      <div class="stat"><span>ยอดขายรวม</span><strong><span id="dashSales">0</span> ฿</strong></div>
+      <div class="stat"><span>จำนวนบิล</span><strong><span id="dashBills">0</span></strong></div>
+      <div class="stat"><span>ลูกค้าทั้งหมด</span><strong><span id="dashCustomers">0</span></strong></div>
+      <div class="stat"><span>สิทธิ์ฟรีพร้อมใช้</span><strong><span id="dashFreeReady">0</span></strong></div>
+    </section>
+
+    <section id="pos" class="page active">
+      <div class="grid-main">
+        <div>
+          <div class="card">
+            <h3>ลูกค้าและสิทธิ์โปรโมชั่น</h3>
+            <input id="customerSearch" placeholder="ค้นหาลูกค้าเดิมด้วยชื่อ หรือ เบอร์โทร" oninput="filterCustomerSelect()">
+            <select id="customerSelect" onchange="syncCustomerInputFromSelect(); renderCustomerPromoBox()"></select>
+            <div class="row">
+              <input id="quickCustomerName" placeholder="ชื่อลูกค้า เช่น คุณแอน" oninput="renderCustomerPromoBox()">
+              <input id="quickCustomerPhone" placeholder="เบอร์โทร เช่น 0812345678" oninput="renderCustomerPromoBox()">
+            </div>
+            <div id="customerPromoBox" class="calc-box"></div>
+          </div>
+
+          <div class="card">
+            <h3>คำนวณราคาบริการอาบน้ำ/ตัดขน</h3>
+            <div class="row3">
+              <select id="calcPetType" onchange="calculateGroomingPrice()"><option>สุนัข</option><option>แมว</option></select>
+              <select id="calcCoatType" onchange="calculateGroomingPrice()"><option>ขนสั้น</option><option>ขนยาว</option></select>
+              <select id="calcService" onchange="calculateGroomingPrice()"><option>อาบน้ำ</option><option>ตัดขน</option><option>อาบน้ำ + ตัดขน</option><option>ไถขน</option><option>สางขน</option></select>
+            </div>
+            <div class="row">
+              <input id="calcWeight" type="number" min="0" step="0.1" placeholder="ใส่น้ำหนัก เช่น 4.5" oninput="calculateGroomingPrice()">
+              <input id="calcPetName" placeholder="ชื่อน้อง / หมายเหตุสั้น ๆ">
+            </div>
+            <div class="calc-box">
+              <div class="calc-result"><span id="calcDetail">ใส่น้ำหนักเพื่อคำนวณราคา</span><strong><span id="calcPrice">0</span> ฿</strong></div>
+              <button class="btn full" onclick="addCalculatedService(false)">เพิ่มบริการนี้ลงตะกร้า</button>
+              <button class="btn green full" style="margin-top:8px" onclick="addCalculatedService(true)">ใช้สิทธิ์ฟรีกับบริการนี้</button>
+            </div>
+          </div>
+
+          <div class="card">
+            <h3>สินค้า / บริการราคาเดียว</h3>
+            <div class="menu-grid" id="menuGrid"></div>
+          </div>
+        </div>
+
+        <div class="card">
+          <h3>ตะกร้าขาย</h3>
+          <div id="cartList"></div>
+          <div class="total-box"><span>ยอดรวม</span><strong><span id="cartTotal">0</span> ฿</strong></div>
+          <label style="display:block;margin-bottom:6px;color:#777;font-size:14px">วันที่ลงยอดขาย / วันที่ให้บริการ</label>
+          <input id="saleDate" type="date">
+          <select id="paymentMethod"><option>เงินสด</option><option>โอน</option><option>บัตร</option><option>ฟรีโปรโมชั่น</option></select>
+          <button class="btn full" onclick="checkout()">บันทึกยอดขาย</button>
+        </div>
+      </div>
+    </section>
+
+    <section id="customers" class="page">
+      <div class="grid-main">
+        <div class="card">
+          <h3>เพิ่มลูกค้า/สัตว์เลี้ยง</h3>
+          <div class="row"><input id="customerName" placeholder="ชื่อลูกค้า"><input id="customerPhone" placeholder="เบอร์โทร / Line"></div>
+          <div class="row"><input id="petName" placeholder="ชื่อน้อง"><select id="petType"><option>สุนัข</option><option>แมว</option></select></div>
+          <textarea id="petNote" placeholder="หมายเหตุ เช่น กลัวไดร์ ดุ แพ้แชมพู"></textarea>
+          <button class="btn full" onclick="addCustomer()">บันทึกลูกค้า</button>
+        </div>
+        <div class="card">
+          <h3>จำนวนครั้งที่ลูกค้ามาใช้บริการ</h3>
+          <div class="table-wrap"><table><thead><tr><th>ลูกค้า</th><th>จำนวนครั้ง</th><th>โปร</th><th>สิทธิ์ฟรี</th><th></th></tr></thead><tbody id="customerVisitTable"></tbody></table></div>
+        </div>
+      </div>
+    </section>
+
+    <section id="promotion" class="page">
+      <div class="grid-main">
+        <div class="card">
+          <h3>ตั้งค่าโปรโมชั่น</h3>
+          <input id="promoName" placeholder="ชื่อโปรโมชั่น เช่น ครบ 5 ครั้ง ฟรี 1 ครั้ง">
+          <div class="row">
+            <input id="promoRequired" type="number" placeholder="ครบกี่ครั้ง เช่น 5">
+            <input id="promoFree" type="number" placeholder="ฟรีกี่ครั้ง เช่น 1">
+          </div>
+          <label><input id="promoActive" type="checkbox" style="width:auto" checked> เปิดใช้งานโปรโมชั่นนี้</label>
+          <button class="btn full" onclick="savePromotion()">บันทึกโปรโมชั่น</button>
+          <p style="color:#777;font-size:13px">ระบบจะนับเฉพาะบิลบริการที่ไม่ใช่สิทธิ์ฟรี เพื่อสะสมแต้ม</p>
+        </div>
+        <div class="card">
+          <h3>โปรโมชั่นปัจจุบัน</h3>
+          <div id="promotionInfo"></div>
+        </div>
+      </div>
+    </section>
+
+    <section id="price" class="page">
+      <div class="grid-main">
+        <div class="card">
+          <h3>เพิ่มเรทราคาอัตโนมัติ</h3>
+          <div class="row3">
+            <select id="rulePetType"><option>สุนัข</option><option>แมว</option></select>
+            <select id="ruleCoatType"><option>ขนสั้น</option><option>ขนยาว</option></select>
+            <select id="ruleService"><option>อาบน้ำ</option><option>ตัดขน</option><option>อาบน้ำ + ตัดขน</option><option>ไถขน</option><option>สางขน</option></select>
+          </div>
+          <div class="row3"><input id="ruleMinWeight" type="number" step="0.1" placeholder="น้ำหนักเริ่ม"><input id="ruleMaxWeight" type="number" step="0.1" placeholder="น้ำหนักถึง"><input id="rulePrice" type="number" placeholder="ราคา"></div>
+          <button class="btn full" onclick="addPriceRule()">เพิ่มเรทราคา</button>
+        </div>
+        <div class="card">
+          <h3>ตารางเรทราคา</h3>
+          <div class="table-wrap"><table><thead><tr><th>สัตว์</th><th>ขน</th><th>บริการ</th><th>น้ำหนัก</th><th>ราคา</th><th></th></tr></thead><tbody id="priceRuleTable"></tbody></table></div>
+        </div>
+      </div>
+    </section>
+
+    <section id="staff" class="page">
+      <div class="grid-main">
+        <div class="card">
+          <h3>เพิ่มพนักงาน</h3>
+          <input id="staffName" placeholder="ชื่อพนักงาน"><input id="staffPin" type="password" placeholder="ตั้ง PIN 4 หลัก">
+          <select id="staffRole"><option>เจ้าของร้าน</option><option>แคชเชียร์</option><option>ช่างกรูมมิ่ง</option></select>
+          <button class="btn full" onclick="addStaff()">เพิ่มพนักงาน</button>
+        </div>
+        <div class="card"><h3>รายชื่อพนักงาน</h3><div class="table-wrap"><table><thead><tr><th>ชื่อ</th><th>ตำแหน่ง</th><th>ยอดขาย</th><th></th></tr></thead><tbody id="staffTable"></tbody></table></div></div>
+      </div>
+    </section>
+
+    <section id="report" class="page">
+      <div class="card">
+        <h3>รายงานยอดขาย</h3><p style="color:#777;margin-top:-6px">ดูยอดขายรายสัปดาห์/รายเดือน แยกสุนัข-แมว แยกบริการ แยกพนักงาน และส่งออก CSV ได้</p>
+        <div class="row">
+          <select id="reportPeriod" onchange="renderSales()">
+            <option value="all">ทั้งหมด</option>
+            <option value="week">รายสัปดาห์</option>
+            <option value="month">รายเดือน</option>
+          </select>
+          <input id="reportDate" type="date" onchange="renderSales()">
+        </div>
+        <div class="dashboard" style="margin-bottom:10px">
+          <div class="stat"><span>ยอดขายตามช่วงที่เลือก</span><strong><span id="filteredSalesTotal">0</span> ฿</strong></div>
+          <div class="stat"><span>จำนวนบิล</span><strong><span id="filteredBillCount">0</span></strong></div>
+          <div class="stat"><span>สุนัข</span><strong><span id="filteredDogCount">0</span></strong></div>
+          <div class="stat"><span>แมว</span><strong><span id="filteredCatCount">0</span></strong></div>
+        </div>
+<div class="dashboard" style="margin-bottom:10px">
+          <div class="stat"><span>ยอดขายสุนัข</span><strong><span id="dogSalesTotal">0</span> ฿</strong></div>
+          <div class="stat"><span>ยอดขายแมว</span><strong><span id="catSalesTotal">0</span> ฿</strong></div>
+          <div class="stat"><span>ยอดอาบน้ำ</span><strong><span id="bathSalesTotal">0</span> ฿</strong></div>
+          <div class="stat"><span>ยอดตัด/ไถขน</span><strong><span id="groomSalesTotal">0</span> ฿</strong></div>
+        </div>
+        <div class="card" style="box-shadow:none;margin-bottom:12px">
+          <h3>สรุปยอดขายแยกบริการ</h3>
+          <div class="table-wrap">
+            <table>
+              <thead><tr><th>บริการ</th><th>จำนวนบิล</th><th>ยอดขาย</th></tr></thead>
+              <tbody id="serviceSummaryTable"></tbody>
+            </table>
+          </div>
+        </div>
+        <div class="card" style="box-shadow:none;margin-bottom:12px">
+          <h3>สรุปยอดขายแยกพนักงาน</h3>
+          <div class="table-wrap">
+            <table>
+              <thead><tr><th>พนักงาน</th><th>จำนวนบิล</th><th>ยอดขาย</th></tr></thead>
+              <tbody id="staffSummaryTable"></tbody>
+            </table>
+          </div>
+        </div>
+        <div class="row"><button class="btn" onclick="exportSalesCSV()">📤 ส่งออก CSV</button><button class="btn secondary" onclick="window.print()">🖨️ พิมพ์รายงาน</button></div><div class="row"><button class="btn danger" onclick="clearSalesHistory()">🗑️ ล้างยอดขายทั้งหมด</button><button class="btn secondary" onclick="clearSalesByDate()">📅 ล้างตามช่วงวันที่</button></div><div class="row"><input type="date" id="clearFromDate"><input type="date" id="clearToDate"></div>
+      </div>
+      <div class="card">
+        <h3>ประวัติยอดขาย</h3>
+        <div class="table-wrap"><table><thead><tr><th>วันที่ให้บริการ</th><th>เวลาที่ลงบิล</th><th>พนักงาน</th><th>ลูกค้า</th><th>เบอร์โทร</th><th>ประเภทสัตว์</th><th>รายการ</th><th>รายละเอียด</th><th>โปร</th><th>ชำระ</th><th>รวม</th></tr></thead><tbody id="salesTable"></tbody></table></div>
+      </div>
+    </section>
+  </main>
+</div>
+
+<nav class="mobile-nav">
+  <button class="active" onclick="showPage('pos')">ขาย</button>
+  <button onclick="showPage('customers')">ลูกค้า</button>
+  <button onclick="showPage('promotion')">โปร</button>
+  <button onclick="showPage('price')">ราคา</button>
+  <button onclick="showPage('staff')">พนง.</button>
+  <button onclick="showPage('report')">รายงาน</button>
+</nav>
+
+<script>
+let staff = JSON.parse(localStorage.getItem('hg_staff_v4')) || [{name:'เจ้าของร้าน', pin:'1234', role:'เจ้าของร้าน'}];
+let currentStaff = JSON.parse(localStorage.getItem('hg_currentStaff_v4')) || null;
+let promotion = JSON.parse(localStorage.getItem('hg_promotion_v4')) || {name:'ครบ 5 ครั้ง ฟรี 1 ครั้ง', required:5, free:1, active:true};
+
+let menuItems = JSON.parse(localStorage.getItem('hg_menuItems_v4')) || [
+  {name:'ฝากเลี้ยง 1 วัน', price:200, type:'ฝากเลี้ยง'},
+  {name:'แชมพูสัตว์เลี้ยง', price:250, type:'สินค้า'},
+  {name:'ตัดเล็บ', price:50, type:'บริการอื่น ๆ'}
+];
+let priceRules = JSON.parse(localStorage.getItem('hg_priceRules_v4')) || [
+  {petType:'สุนัข', coatType:'ขนสั้น', service:'อาบน้ำ', min:0, max:5, price:300},
+  {petType:'สุนัข', coatType:'ขนสั้น', service:'อาบน้ำ', min:5.1, max:10, price:400},
+  {petType:'สุนัข', coatType:'ขนยาว', service:'อาบน้ำ', min:0, max:5, price:400},
+  {petType:'สุนัข', coatType:'ขนยาว', service:'อาบน้ำ', min:5.1, max:10, price:550},
+  {petType:'สุนัข', coatType:'ขนสั้น', service:'อาบน้ำ + ตัดขน', min:0, max:5, price:650},
+  {petType:'สุนัข', coatType:'ขนยาว', service:'อาบน้ำ + ตัดขน', min:0, max:5, price:800},
+  {petType:'แมว', coatType:'ขนสั้น', service:'อาบน้ำ', min:0, max:8, price:500},
+  {petType:'แมว', coatType:'ขนยาว', service:'อาบน้ำ', min:0, max:8, price:650},
+  {petType:'แมว', coatType:'ขนสั้น', service:'อาบน้ำ + ตัดขน', min:0, max:8, price:900},
+  {petType:'แมว', coatType:'ขนยาว', service:'อาบน้ำ + ตัดขน', min:0, max:8, price:1100}
+];
+let customers = JSON.parse(localStorage.getItem('hg_customers_v4')) || [];
+let sales = JSON.parse(localStorage.getItem('hg_sales_v4')) || [];
+let cart = [];
+let currentCalc = null;
+
+const pages = ['pos','customers','promotion','price','staff','report'];
+const titles = {pos:'ขายหน้าร้าน',customers:'ลูกค้า/โปรโมชั่น',promotion:'โปรโมชั่น',price:'ตารางราคา',staff:'พนักงาน',report:'รายงานยอดขาย'};
+document.getElementById('todayText').innerText = new Date().toLocaleDateString('th-TH',{weekday:'long',year:'numeric',month:'long',day:'numeric'});
+
+function todayISO(){
+  const d = new Date();
+  const offset = d.getTimezoneOffset();
+  const local = new Date(d.getTime() - offset * 60000);
+  return local.toISOString().split('T')[0];
+}
+
+function formatThaiDateFromISO(iso){
+  if(!iso) return new Date().toLocaleDateString('th-TH');
+  const parts = iso.split('-');
+  return new Date(Number(parts[0]), Number(parts[1])-1, Number(parts[2])).toLocaleDateString('th-TH', {
+    year:'numeric', month:'2-digit', day:'2-digit'
+  });
+}
+
+function customerKey(c){ return `${c.name}${c.pet ? ' - '+c.pet : ''}`; }
+function customerLabel(c){ return `${c.name}${c.pet ? ' - '+c.pet : ''}${c.phone ? ' / '+c.phone : ''}`; }
+
+function normalizePetTypeFromCart(cartItems){
+  const text = cartItems.map(i => `${i.petType || ''} ${i.name || ''}`).join(' ');
+  if(text.includes('แมว')) return 'แมว';
+  if(text.includes('สุนัข')) return 'สุนัข';
+  return '-';
+}
+
+function normalizeServiceForReport(cartItems){
+  const text = cartItems.map(i => `${i.serviceName || ''} ${i.name || ''}`).join(' ');
+  const hasBath = text.includes('อาบน้ำ');
+  const hasGroom = text.includes('ตัดขน');
+  const hasShave = text.includes('ไถขน');
+  if(hasBath && hasGroom) return 'อาบน้ำ ตัดขน';
+  if(hasShave) return 'ไถขน';
+  if(hasGroom) return 'ตัดขน';
+  if(hasBath) return 'อาบน้ำ';
+  return 'บริการเสริม';
+}
+function selectedCustomer(){
+  const name = document.getElementById('quickCustomerName')?.value.trim();
+  const phone = document.getElementById('quickCustomerPhone')?.value.trim();
+  if(name && phone) return `${name} (${phone})`;
+  if(name) return name;
+  return document.getElementById('customerSelect').value || 'ลูกค้าทั่วไป';
+}
+
+function selectedCustomerNameOnly(){
+  return document.getElementById('quickCustomerName')?.value.trim() || selectedCustomer();
+}
+
+function selectedCustomerPhone(){
+  return document.getElementById('quickCustomerPhone')?.value.trim() || '';
+}
+
+function syncCustomerInputFromSelect(){
+  const selected = document.getElementById('customerSelect').value;
+  const nameInput = document.getElementById('quickCustomerName');
+  const phoneInput = document.getElementById('quickCustomerPhone');
+  if(selected === 'ลูกค้าทั่วไป'){
+    if(nameInput) nameInput.value = '';
+    if(phoneInput) phoneInput.value = '';
+    return;
+  }
+  const c = customers.find(x => customerKey(x) === selected);
+  if(c){
+    if(nameInput) nameInput.value = c.name || '';
+    if(phoneInput) phoneInput.value = c.phone || '';
+  } else {
+    if(nameInput) nameInput.value = selected;
+  }
+}
+
+function filterCustomerSelect(){
+  renderCustomers();
+}
+
+function saveAll(){
+  localStorage.setItem('hg_staff_v4', JSON.stringify(staff));
+  localStorage.setItem('hg_currentStaff_v4', JSON.stringify(currentStaff));
+  localStorage.setItem('hg_promotion_v4', JSON.stringify(promotion));
+  localStorage.setItem('hg_menuItems_v4', JSON.stringify(menuItems));
+  localStorage.setItem('hg_priceRules_v4', JSON.stringify(priceRules));
+  localStorage.setItem('hg_customers_v4', JSON.stringify(customers));
+  localStorage.setItem('hg_sales_v4', JSON.stringify(sales));
+}
+
+function initLogin(){
+  const sel = document.getElementById('loginStaffSelect');
+  sel.innerHTML = '';
+  staff.forEach((s,i)=> sel.innerHTML += `<option value="${i}">${s.name} - ${s.role}</option>`);
+  if(currentStaff){
+    document.getElementById('loginScreen').style.display = 'none';
+    document.getElementById('app').classList.add('logged');
+    document.getElementById('currentStaffName').innerText = `${currentStaff.name} (${currentStaff.role})`;
+  }
+}
+
+function login(){
+  const i = document.getElementById('loginStaffSelect').value;
+  const pin = document.getElementById('loginPin').value;
+  if(!staff[i] || staff[i].pin !== pin) return alert('PIN ไม่ถูกต้อง');
+  currentStaff = {name: staff[i].name, role: staff[i].role};
+  saveAll();
+  document.getElementById('loginScreen').style.display = 'none';
+  document.getElementById('app').classList.add('logged');
+  document.getElementById('currentStaffName').innerText = `${currentStaff.name} (${currentStaff.role})`;
+  renderAll();
+}
+
+function logout(){
+  currentStaff = null;
+  localStorage.removeItem('hg_currentStaff_v4');
+  document.getElementById('app').classList.remove('logged');
+  document.getElementById('loginScreen').style.display = 'grid';
+  document.getElementById('loginPin').value = '';
+  
+function clearSalesHistory(){
+  const pin = prompt('กรุณาใส่ PIN เจ้าของร้านเพื่อยืนยัน');
+  if(pin === null) return;
+  if(pin !== '1234'){
+    alert('PIN ไม่ถูกต้อง');
+    return;
+  }
+  if(!confirm('ยืนยัน🗑️ ล้างยอดขายทั้งหมด?')){
+    return;
+  }
+  sales = [];
+  try{
+    localStorage.removeItem('hg_sales_v4');
+    localStorage.removeItem('hg_sales_v3');
+  }catch(e){}
+  if(typeof saveAll === 'function') saveAll();
+  if(typeof renderAll === 'function') renderAll();
+  alert('ล้างประวัติยอดขายเรียบร้อย');
+}
+
+function clearSalesByDate(){
+  const from = document.getElementById('clearFromDate')?.value;
+  const to = document.getElementById('clearToDate')?.value;
+  if(!from || !to){
+    alert('กรุณาเลือกช่วงวันที่');
+    return;
+  }
+  if(!confirm('ยืนยันลบยอดขายในช่วงวันที่ที่เลือก?')){
+    return;
+  }
+  sales = sales.filter(s=>{
+    const d = s.saleDateISO || '';
+    return !(d >= from && d <= to);
+  });
+  if(typeof saveAll === 'function') saveAll();
+  if(typeof renderAll === 'function') renderAll();
+  alert('ล้างข้อมูลตามช่วงวันที่เรียบร้อย');
+}
+
+initLogin();
+}
+
+function showPage(id){
+  document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+  document.getElementById('pageTitle').innerText = titles[id];
+  document.querySelectorAll('.nav button,.mobile-nav button').forEach(b=>b.classList.remove('active'));
+  const i = pages.indexOf(id);
+  document.querySelectorAll('.nav button')[i]?.classList.add('active');
+  document.querySelectorAll('.mobile-nav button')[i]?.classList.add('active');
+  renderAll();
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+
+function renderAll(){
+  const saleDateInput = document.getElementById('saleDate');
+  if(saleDateInput && !saleDateInput.value) saleDateInput.value = todayISO();
+  renderDashboard(); renderMenu(); renderCustomers(); renderCustomerPromoBox(); renderCustomerVisitTable(); renderPromotion(); renderPriceRules(); renderStaff(); renderSales(); calculateGroomingPrice(); renderCart();
+}
+
+function getCustomerStats(name){
+  const paidVisits = sales.filter(s => s.customer === name && s.countVisit === true).length;
+  const freeUsed = sales.filter(s => s.customer === name && s.usedFree === true).length;
+  const earnedFree = promotion.active ? Math.floor(paidVisits / Number(promotion.required || 1)) * Number(promotion.free || 0) : 0;
+  const freeAvailable = Math.max(0, earnedFree - freeUsed);
+  const progress = promotion.active ? paidVisits % Number(promotion.required || 1) : 0;
+  const need = promotion.active ? Number(promotion.required || 1) - progress : 0;
+  return {paidVisits, freeUsed, earnedFree, freeAvailable, progress, need};
+}
+
+function renderDashboard(){
+  const total = sales.reduce((sum,s)=>sum+Number(s.total),0);
+  const freeReady = customers.filter(c => getCustomerStats(customerKey(c)).freeAvailable > 0).length;
+  document.getElementById('dashSales').innerText = total.toLocaleString('th-TH');
+  document.getElementById('dashBills').innerText = sales.length;
+  document.getElementById('dashCustomers').innerText = customers.length;
+  document.getElementById('dashFreeReady').innerText = freeReady;
+}
+
+function renderCustomerPromoBox(){
+  const box = document.getElementById('customerPromoBox');
+  const customer = selectedCustomer();
+  if(customer === 'ลูกค้าทั่วไป'){
+    box.innerHTML = '<span class="tag">ลูกค้าทั่วไป</span><br>เลือกชื่อลูกค้าเพื่อดูจำนวนครั้งและสิทธิ์โปรโมชั่น';
+    return;
+  }
+  const st = getCustomerStats(customer);
+  const percent = promotion.active ? Math.min(100, (st.progress / Number(promotion.required || 1)) * 100) : 0;
+  box.innerHTML = `
+    <span class="tag green">${promotion.name}</span>
+    <h3 style="margin:10px 0 6px">${customer}</h3>
+    มาใช้บริการสะสมแล้ว <b>${st.paidVisits}</b> ครั้ง<br>
+    สิทธิ์ฟรีคงเหลือ <b style="color:var(--green)">${st.freeAvailable}</b> ครั้ง<br>
+    ${promotion.active ? `อีก <b>${st.need}</b> ครั้ง จะได้สิทธิ์ฟรีเพิ่ม
+    <div class="progress"><div style="width:${percent}%"></div></div>` : 'ยังไม่ได้เปิดโปรโมชั่น'}
+  `;
+}
+
+function findPriceRule(petType, coatType, service, weight){
+  return priceRules.find(r => r.petType===petType && r.coatType===coatType && r.service===service && weight>=Number(r.min) && weight<=Number(r.max));
+}
+function calculateGroomingPrice(){
+  const petType=document.getElementById('calcPetType').value;
+  const coatType=document.getElementById('calcCoatType').value;
+  const service=document.getElementById('calcService').value;
+  const weight=Number(document.getElementById('calcWeight').value);
+  const detail=document.getElementById('calcDetail');
+  const priceEl=document.getElementById('calcPrice');
+  if(!weight || weight<=0){currentCalc=null; detail.innerText='ใส่น้ำหนักเพื่อคำนวณราคา'; priceEl.innerText='0'; return;}
+  const rule=findPriceRule(petType,coatType,service,weight);
+  if(!rule){currentCalc=null; detail.innerText='ยังไม่มีเรทราคานี้ กรุณาเพิ่มในหน้า “ตารางราคา”'; priceEl.innerText='0'; return;}
+  currentCalc={petType,coatType,service,weight,price:Number(rule.price)};
+  detail.innerText=`${petType} / ${coatType} / ${service} / ${weight} กก.`;
+  priceEl.innerText=Number(rule.price).toLocaleString('th-TH');
+}
+function addCalculatedService(useFree){
+  calculateGroomingPrice();
+  if(!currentCalc) return alert('ยังคำนวณราคาไม่ได้ กรุณาใส่น้ำหนักหรือเพิ่มเรทราคา');
+  const customer = selectedCustomer();
+  if(useFree){
+    if(customer === 'ลูกค้าทั่วไป') return alert('ต้องเลือกลูกค้าก่อนใช้สิทธิ์ฟรี');
+    const st = getCustomerStats(customer);
+    if(st.freeAvailable <= 0) return alert('ลูกค้าคนนี้ยังไม่มีสิทธิ์ฟรี');
+  }
+  const petName=document.getElementById('calcPetName').value.trim();
+  const name=`${currentCalc.service} ${currentCalc.petType} ${currentCalc.coatType} ${currentCalc.weight} กก.${petName?' ('+petName+')':''}`;
+  cart.push({name, price: useFree ? 0 : currentCalc.price, originalPrice: currentCalc.price, type:'บริการคิดตามน้ำหนัก', petType: currentCalc.petType, serviceName: currentCalc.service, isGrooming:true, usedFree:useFree});
+  if(useFree) document.getElementById('paymentMethod').value = 'ฟรีโปรโมชั่น';
+  renderCart();
+}
+
+function renderMenu(){
+  const grid=document.getElementById('menuGrid');
+  grid.innerHTML='';
+  menuItems.forEach((item,index)=>{
+    grid.innerHTML += `
+      <div class="menu-item">
+        <div>
+          <span class="tag">${item.type}</span><br>
+          <b>${item.name}</b>
+        </div>
+        <div>
+          <div class="price">${Number(item.price).toLocaleString('th-TH')} ฿</div>
+          <div class="item-actions">
+            <button class="add-btn" onclick="addFixedToCart(${index})">เพิ่ม</button>
+            <button class="edit-btn" onclick="editMenuItemPrice(${index})">แก้ราคา</button>
+          </div>
+        </div>
+      </div>`;
+  });
+}
+
+function editMenuItemPrice(index){
+  const item = menuItems[index];
+  const newPrice = prompt(`แก้ราคา: ${item.name}`, item.price);
+  if(newPrice === null) return;
+  const price = Number(newPrice);
+  if(!price || price <= 0){
+    alert('กรุณากรอกราคาให้ถูกต้อง');
+    return;
+  }
+  item.price = price;
+  saveAll();
+  renderAll();
+  alert('แก้ไขราคาเรียบร้อย');
+}
+
+function addFixedToCart(index){ cart.push({...menuItems[index], petType:'-', serviceName:menuItems[index].name, isGrooming:false, usedFree:false}); renderCart(); }
+
+function renderCart(){
+  const list=document.getElementById('cartList');
+  if(cart.length===0){list.innerHTML='<div class="empty">ยังไม่มีรายการขาย<br>คำนวณราคาแล้วกดเพิ่มลงตะกร้า</div>'}
+  else{
+    list.innerHTML='';
+    cart.forEach((item,index)=>{
+      const freeText = item.usedFree ? '<br><small style="color:var(--green)">ใช้สิทธิ์ฟรี</small>' : '';
+      list.innerHTML += `<div class="cart-line"><div><b>${item.name}</b><br><small>${item.type}</small>${freeText}</div><div><b>${Number(item.price).toLocaleString('th-TH')} ฿</b> <button class="btn danger" onclick="removeCart(${index})">ลบ</button></div></div>`;
+    });
+  }
+  const total=cart.reduce((sum,item)=>sum+Number(item.price),0);
+  document.getElementById('cartTotal').innerText=total.toLocaleString('th-TH');
+}
+function removeCart(index){cart.splice(index,1); renderCart();}
+
+function checkout(){
+  if(!currentStaff) return alert('กรุณาเข้าสู่ระบบก่อน');
+  if(cart.length===0) return alert('ยังไม่มีรายการขาย');
+  const customer=selectedCustomer();
+  const customerNameOnly = selectedCustomerNameOnly();
+  const customerPhone = selectedCustomerPhone();
+  if(customer !== 'ลูกค้าทั่วไป' && !customers.some(c => customerKey(c) === customerNameOnly || customerLabel(c) === customer)){
+    customers.push({name: customerNameOnly, phone: customerPhone, pet:'', type:'', note:'เพิ่มจากหน้าขาย'});
+  }
+  const payment=document.getElementById('paymentMethod').value;
+  const total=cart.reduce((sum,item)=>sum+Number(item.price),0);
+  const hasGrooming = cart.some(i => i.isGrooming && !i.usedFree);
+  const usedFree = cart.some(i => i.usedFree);
+  sales.push({
+    date:formatThaiDateFromISO(document.getElementById('saleDate')?.value || todayISO()),
+    saleDateISO:document.getElementById('saleDate')?.value || todayISO(),
+    recordedAt:new Date().toLocaleString('th-TH'),
+    staff:currentStaff.name,
+    staffRole:currentStaff.role,
+    customer,
+    customerPhone:selectedCustomerPhone(),
+    petTypes:normalizePetTypeFromCart(cart),
+    serviceList:normalizeServiceForReport(cart),
+    items:cart.map(i=>i.name).join(' + '),
+    promotion: usedFree ? promotion.name : '',
+    usedFree,
+    countVisit: customer !== 'ลูกค้าทั่วไป' && hasGrooming,
+    payment,
+    total
+  });
+  cart=[]; saveAll(); renderAll();
+  alert('บันทึกยอดขายสำเร็จ รวม '+total.toLocaleString('th-TH')+' บาท');
+}
+
+function renderCustomers(){
+  const select=document.getElementById('customerSelect');
+  const search=(document.getElementById('customerSearch')?.value || '').trim().toLowerCase();
+  const current = select.value;
+  select.innerHTML='<option>ลูกค้าทั่วไป</option>';
+  customers.forEach(c=>{
+    const key=customerKey(c);
+    const label=customerLabel(c);
+    const haystack=`${c.name || ''} ${c.phone || ''} ${c.pet || ''}`.toLowerCase();
+    if(!search || haystack.includes(search)){
+      select.innerHTML += `<option value="${key}">${label}</option>`;
+    }
+  });
+  if(current) select.value = current;
+}
+
+function addCustomer(){
+  const name=document.getElementById('customerName').value.trim(), phone=document.getElementById('customerPhone').value.trim(), pet=document.getElementById('petName').value.trim(), type=document.getElementById('petType').value, note=document.getElementById('petNote').value.trim();
+  if(!name) return alert('กรุณากรอกชื่อลูกค้า');
+  customers.push({name,phone,pet,type,note});
+  document.getElementById('customerName').value=''; document.getElementById('customerPhone').value=''; document.getElementById('petName').value=''; document.getElementById('petNote').value='';
+  saveAll(); renderAll(); alert('บันทึกลูกค้าแล้ว');
+}
+
+function renderCustomerVisitTable(){
+  const table = document.getElementById('customerVisitTable');
+  if(customers.length===0){ table.innerHTML='<tr><td colspan="5">ยังไม่มีข้อมูลลูกค้า</td></tr>'; return; }
+  table.innerHTML='';
+  customers.forEach((c,index)=>{
+    const name = customerKey(c);
+    const st = getCustomerStats(name);
+    const percent = promotion.active ? Math.min(100, (st.progress / Number(promotion.required || 1)) * 100) : 0;
+    table.innerHTML += `
+      <tr>
+        <td><b>${name}</b><br><small>${c.phone || ''} ${c.note || ''}</small></td>
+        <td>${st.paidVisits} ครั้ง</td>
+        <td>สะสม ${st.progress}/${promotion.required}<div class="progress"><div style="width:${percent}%"></div></div></td>
+        <td><b style="color:var(--green)">${st.freeAvailable}</b> ครั้ง</td>
+        <td><button class="btn danger" onclick="deleteCustomer(${index})">ลบ</button></td>
+      </tr>`;
+  });
+}
+
+function deleteCustomer(index){
+  if(confirm('ต้องการลบลูกค้านี้ใช่ไหม? ประวัติยอดขายเดิมจะยังอยู่')){ customers.splice(index,1); saveAll(); renderAll(); }
+}
+
+function savePromotion(){
+  const name=document.getElementById('promoName').value.trim() || 'โปรโมชั่นสะสมครั้ง';
+  const required=Number(document.getElementById('promoRequired').value);
+  const free=Number(document.getElementById('promoFree').value);
+  const active=document.getElementById('promoActive').checked;
+  if(required<=0 || free<=0) return alert('กรุณากรอกจำนวนครั้งให้ถูกต้อง');
+  promotion = {name, required, free, active};
+  saveAll(); renderAll(); alert('บันทึกโปรโมชั่นแล้ว');
+}
+
+function renderPromotion(){
+  document.getElementById('promoName').value = promotion.name;
+  document.getElementById('promoRequired').value = promotion.required;
+  document.getElementById('promoFree').value = promotion.free;
+  document.getElementById('promoActive').checked = promotion.active;
+  document.getElementById('promotionInfo').innerHTML = `
+    <div class="calc-box">
+      <span class="tag ${promotion.active ? 'green' : ''}">${promotion.active ? 'เปิดใช้งาน' : 'ปิดใช้งาน'}</span>
+      <h3 style="margin:10px 0">${promotion.name}</h3>
+      ลูกค้ามาใช้บริการครบ <b>${promotion.required}</b> ครั้ง ฟรี <b>${promotion.free}</b> ครั้ง
+    </div>`;
+}
+
+function addPriceRule(){
+  const petType=document.getElementById('rulePetType').value, coatType=document.getElementById('ruleCoatType').value, service=document.getElementById('ruleService').value;
+  const min=Number(document.getElementById('ruleMinWeight').value), max=Number(document.getElementById('ruleMaxWeight').value), price=Number(document.getElementById('rulePrice').value);
+  if(max<=0 || price<=0 || max<min) return alert('กรุณากรอกช่วงน้ำหนักและราคาให้ถูกต้อง');
+  priceRules.push({petType,coatType,service,min,max,price});
+  document.getElementById('ruleMinWeight').value=''; document.getElementById('ruleMaxWeight').value=''; document.getElementById('rulePrice').value='';
+  saveAll(); renderAll();
+}
+function renderPriceRules(){
+  const table=document.getElementById('priceRuleTable');
+  if(priceRules.length===0){table.innerHTML='<tr><td colspan="6">ยังไม่มีเรทราคา</td></tr>'; return;}
+  table.innerHTML='';
+  priceRules.map((r,i)=>({...r,index:i})).sort((a,b)=>a.petType.localeCompare(b.petType,'th')||a.service.localeCompare(b.service,'th')||Number(a.min)-Number(b.min)).forEach(r=>{
+    table.innerHTML += `<tr><td>${r.petType}</td><td>${r.coatType}</td><td>${r.service}</td><td>${r.min}-${r.max} กก.</td><td>${Number(r.price).toLocaleString('th-TH')} ฿</td><td><div class="price-rule-actions"><button class="btn secondary" onclick="editPriceRule(${r.index})">แก้ราคา</button><button class="btn danger" onclick="deletePriceRule(${r.index})">ลบ</button></div></td></tr>`;
+  });
+}
+function editPriceRule(index){
+  const rule = priceRules[index];
+  const newPrice = prompt(`แก้ราคา: ${rule.petType} / ${rule.coatType} / ${rule.service} / ${rule.min}-${rule.max} กก.`, rule.price);
+  if(newPrice === null) return;
+  const price = Number(newPrice);
+  if(!price || price <= 0){
+    alert('กรุณากรอกราคาให้ถูกต้อง');
+    return;
+  }
+  rule.price = price;
+  saveAll();
+  renderAll();
+  alert('แก้ไขราคาเรียบร้อย');
+}
+
+function deletePriceRule(index){ if(confirm('ต้องการลบเรทราคานี้ใช่ไหม?')){priceRules.splice(index,1); saveAll(); renderAll();} }
+
+function addStaff(){
+  const name=document.getElementById('staffName').value.trim(), pin=document.getElementById('staffPin').value.trim(), role=document.getElementById('staffRole').value;
+  if(!name || !pin) return alert('กรุณากรอกชื่อพนักงานและ PIN');
+  staff.push({name,pin,role});
+  document.getElementById('staffName').value=''; document.getElementById('staffPin').value='';
+  saveAll(); initLogin(); renderAll();
+}
+function renderStaff(){
+  const table=document.getElementById('staffTable');
+  table.innerHTML='';
+  staff.forEach((s,index)=>{
+    const staffTotal=sales.filter(x=>x.staff===s.name).reduce((sum,x)=>sum+Number(x.total),0);
+    const delBtn = index===0 ? '-' : `<button class="btn danger" onclick="deleteStaff(${index})">ลบ</button>`;
+    table.innerHTML += `<tr><td>${s.name}</td><td>${s.role}</td><td>${staffTotal.toLocaleString('th-TH')} ฿</td><td>${delBtn}</td></tr>`;
+  });
+}
+function deleteStaff(index){ if(confirm('ต้องการลบพนักงานนี้ใช่ไหม?')){ staff.splice(index,1); saveAll(); initLogin(); renderAll(); } }
+
+
+function parseSaleISO(s){
+  if(s.saleDateISO) return s.saleDateISO;
+  if(!s.date) return '';
+  const parts = String(s.date).match(/(\d{1,2})\/(\d{1,2})\/(\d{4})/);
+  if(parts){
+    let y = Number(parts[3]);
+    if(y > 2400) y -= 543;
+    return `${y}-${String(parts[2]).padStart(2,'0')}-${String(parts[1]).padStart(2,'0')}`;
+  }
+  return '';
+}
+
+function startOfWeekISO(iso){
+  const d = new Date(iso + 'T00:00:00');
+  const day = d.getDay(); // 0 Sun
+  const diff = day === 0 ? -6 : 1 - day; // Monday start
+  d.setDate(d.getDate() + diff);
+  return d.toISOString().split('T')[0];
+}
+
+function getFilteredSales(){
+  const period = document.getElementById('reportPeriod')?.value || 'all';
+  let selected = document.getElementById('reportDate')?.value || todayISO();
+  const reportDateInput = document.getElementById('reportDate');
+  if(reportDateInput && !reportDateInput.value) reportDateInput.value = selected;
+
+  if(period === 'all') return sales;
+
+  if(period === 'week'){
+    const weekStart = startOfWeekISO(selected);
+    return sales.filter(s => startOfWeekISO(parseSaleISO(s)) === weekStart);
+  }
+
+  if(period === 'month'){
+    const ym = selected.slice(0,7);
+    return sales.filter(s => parseSaleISO(s).slice(0,7) === ym);
+  }
+
+  return sales;
+}
+
+function updateFilteredSummary(filtered){
+  const total = filtered.reduce((sum,s)=>sum+Number(s.total || 0),0);
+  const dogItems = filtered.filter(s => (s.petTypes || '').includes('สุนัข'));
+  const catItems = filtered.filter(s => (s.petTypes || '').includes('แมว'));
+  const dogTotal = dogItems.reduce((sum,s)=>sum+Number(s.total || 0),0);
+  const catTotal = catItems.reduce((sum,s)=>sum+Number(s.total || 0),0);
+
+  const bathItems = filtered.filter(s => (s.serviceList || '').includes('อาบน้ำ'));
+  const groomItems = filtered.filter(s => {
+    const v = s.serviceList || '';
+    return v.includes('ตัดขน') || v.includes('ไถขน');
+  });
+  const bathTotal = bathItems.reduce((sum,s)=>sum+Number(s.total || 0),0);
+  const groomTotal = groomItems.reduce((sum,s)=>sum+Number(s.total || 0),0);
+
+  if(document.getElementById('filteredSalesTotal')) document.getElementById('filteredSalesTotal').innerText = total.toLocaleString('th-TH');
+  if(document.getElementById('filteredBillCount')) document.getElementById('filteredBillCount').innerText = filtered.length;
+  if(document.getElementById('filteredDogCount')) document.getElementById('filteredDogCount').innerText = dogItems.length;
+  if(document.getElementById('filteredCatCount')) document.getElementById('filteredCatCount').innerText = catItems.length;
+  if(document.getElementById('dogSalesTotal')) document.getElementById('dogSalesTotal').innerText = dogTotal.toLocaleString('th-TH');
+  if(document.getElementById('catSalesTotal')) document.getElementById('catSalesTotal').innerText = catTotal.toLocaleString('th-TH');
+  if(document.getElementById('bathSalesTotal')) document.getElementById('bathSalesTotal').innerText = bathTotal.toLocaleString('th-TH');
+  if(document.getElementById('groomSalesTotal')) document.getElementById('groomSalesTotal').innerText = groomTotal.toLocaleString('th-TH');
+
+  renderServiceSummary(filtered);
+  renderStaffSummary(filtered);
+}
+
+function renderServiceSummary(filtered){
+  const table = document.getElementById('serviceSummaryTable');
+  if(!table) return;
+  const groups = ['อาบน้ำ','อาบน้ำ ตัดขน','ตัดขน','ไถขน','บริการเสริม'];
+  table.innerHTML = '';
+  groups.forEach(name => {
+    const rows = filtered.filter(s => (s.serviceList || 'บริการเสริม') === name);
+    const sum = rows.reduce((a,s)=>a+Number(s.total || 0),0);
+    table.innerHTML += `<tr><td>${name}</td><td>${rows.length}</td><td>${sum.toLocaleString('th-TH')} ฿</td></tr>`;
+  });
+}
+
+function renderStaffSummary(filtered){
+  const table = document.getElementById('staffSummaryTable');
+  if(!table) return;
+  const map = {};
+  filtered.forEach(s => {
+    const name = s.staff || '-';
+    if(!map[name]) map[name] = {count:0,total:0};
+    map[name].count += 1;
+    map[name].total += Number(s.total || 0);
+  });
+  const names = Object.keys(map);
+  if(names.length === 0){
+    table.innerHTML = '<tr><td colspan="3">ไม่มีข้อมูล</td></tr>';
+    return;
+  }
+  table.innerHTML = names.map(name => `<tr><td>${name}</td><td>${map[name].count}</td><td>${map[name].total.toLocaleString('th-TH')} ฿</td></tr>`).join('');
+}
+
+function renderSales(){
+  const table=document.getElementById('salesTable');
+  const filtered = getFilteredSales();
+  updateFilteredSummary(filtered);
+  if(filtered.length===0){table.innerHTML='<tr><td colspan="11">ไม่มีข้อมูลในช่วงที่เลือก</td></tr>'; return;}
+  table.innerHTML='';
+  filtered.slice().reverse().forEach(s=>{
+    table.innerHTML += `<tr><td>${s.date}</td><td>${s.recordedAt || '-'}</td><td>${s.staff || '-'}</td><td>${s.customer}</td><td>${s.customerPhone || '-'}</td><td>${s.petTypes || '-'}</td><td>${s.serviceList || s.items}</td><td>${s.items}</td><td>${s.usedFree ? 'ใช้สิทธิ์ฟรี' : (s.countVisit ? 'สะสมครั้ง' : '-')}</td><td>${s.payment}</td><td>${Number(s.total).toLocaleString('th-TH')} ฿</td></tr>`;
+  });
+}
+
+function exportSalesCSV(){
+  const filtered = getFilteredSales();
+  if(filtered.length===0) return alert('ไม่มีข้อมูลยอดขายในช่วงที่เลือก');
+  let csv='\uFEFFวันที่ให้บริการ,เวลาที่ลงบิล,พนักงาน,ตำแหน่ง,ลูกค้า,เบอร์โทร,ประเภทสัตว์,รายการ,รายละเอียดรายการ,โปรโมชั่น,ใช้สิทธิ์ฟรี,นับสะสมครั้ง,ช่องทางชำระเงิน,ยอดรวม\n';
+  filtered.forEach(s=>{ csv += `"${s.date}","${s.recordedAt || ''}","${s.staff || ''}","${s.staffRole || ''}","${s.customer}","${s.customerPhone || ''}","${s.petTypes || ''}","${s.serviceList || s.items}","${s.items}","${s.promotion || ''}","${s.usedFree ? 'ใช่' : 'ไม่ใช่'}","${s.countVisit ? 'ใช่' : 'ไม่ใช่'}","${s.payment}","${s.total}"\n`; });
+  const blob=new Blob([csv],{type:'text/csv;charset=utf-8;'});
+  const link=document.createElement('a');
+  link.href=URL.createObjectURL(blob);
+  link.download='happy-grooming-sales-promotion-report.csv';
+  link.click();
+}
+
+initLogin();
+renderAll();
+</script>
+</body>
+</html>
